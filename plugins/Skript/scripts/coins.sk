@@ -1,15 +1,15 @@
 command /coins [<text>] [<text>] [<number>]:
   trigger:
-    # Префикс сообщений
+    # Message prefix
     set {_p} to "&6[Coins]&r "
 
-    # /coins - показать свой баланс
+    # /coins - show your balance
     if arg-1 is not set:
       set {_bal} to balance of player
       send "%{_p}%&7Your balance: &e%{_bal}%"
       stop
 
-    # /coins pay <player> <amount> - перевод монет
+    # /coins pay <player> <amount> - transfer coins
     if arg-1 is "pay":
       if arg-2 is not set or arg-3 is not set:
         send "%{_p}%&cUsage: /coins pay <player> <amount>"
@@ -34,7 +34,7 @@ command /coins [<text>] [<text>] [<number>]:
         send "%{_p}%&7You received &e%arg-3%&7 from &e%player%&7." to {_t}
       stop
 
-    # /coins give <player> <amount> - админ добавляет монеты
+    # /coins give <player> <amount> - admin adds coins
     if arg-1 is "give":
       if player does not have permission "coins.admin":
         send "%{_p}%&cNo permission."
@@ -55,7 +55,7 @@ command /coins [<text>] [<text>] [<number>]:
         send "%{_p}%&7You received &e%arg-3%&7 coins." to {_t}
       stop
 
-    # /coins take <player> <amount> - админ снимает монеты
+    # /coins take <player> <amount> - admin removes coins
     if arg-1 is "take":
       if player does not have permission "coins.admin":
         send "%{_p}%&cNo permission."
@@ -76,7 +76,7 @@ command /coins [<text>] [<text>] [<number>]:
         send "%{_p}%&7%arg-3%&7 coins were removed." to {_t}
       stop
 
-    # /coins <player> - показать баланс игрока (нужен coins.view.others)
+    # /coins <player> - show another player's balance (needs coins.view.others)
     set {_t} to offline player named arg-1
     if {_t} is not set:
       send "%{_p}%&cPlayer not found."
@@ -87,7 +87,7 @@ command /coins [<text>] [<text>] [<number>]:
     else:
       send "%{_p}%&cNo permission."
 
-# /coinstop - показать топ балансов (использует /baltop)
+# /coinstop - show top balances (runs /baltop)
 command /coinstop:
   trigger:
     execute player command "baltop"
