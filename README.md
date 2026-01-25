@@ -43,6 +43,13 @@ Notes:
 - Use `-Force` to re-download existing files.
 - Spigot jars are usually built locally (BuildTools). If you already have a jar, set its URL to your own download link.
 
+### Auto-fill from local JARs
+If you already have the `.jar` files locally, you can auto-generate the list:
+
+```bash
+.\build scan server-files
+```
+
 ## 🗺️ Roadmap
 1. ✅ Stable core (performance, anti-cheat, base configs)
 2. 💰 Economy loop (jobs, shops, coin sinks)
