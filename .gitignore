@@ -1,5 +1,4 @@
 # Minecraft server (binaries, worlds, caches, logs)
-Server.jar
 libraries/
 bundler/
 logs/
@@ -8,9 +7,6 @@ orebfuscator_cache/
 world/
 world_nether/
 world_the_end/
-
-# Plugin jars (keep configs in plugin folders)
-plugins/*.jar
 
 # Plugin metrics/updater data
 plugins/PluginMetrics/
