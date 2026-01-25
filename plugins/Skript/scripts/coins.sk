@@ -1,61 +1,93 @@
-options:
-  prefix: "&6[Coins]&r "
-
-# /coins [player] - show your balance or another player's balance (requires coins.view.others)
-command /coins [<player>]:
+command /coins [<text>] [<text>] [<number>]:
   trigger:
-    if arg-1 is set:
-      if player has permission "coins.view.others":
-        set {_bal} to balance of arg-1
-        send "{@prefix}&e%arg-1%&7 balance: &e%{_bal}%"
-      else:
-        send "{@prefix}&cNo permission."
-    else:
+    # Префикс сообщений
+    set {_p} to "&6[Coins]&r "
+
+    # /coins - показать свой баланс
+    if arg-1 is not set:
       set {_bal} to balance of player
-      send "{@prefix}&7Your balance: &e%{_bal}%"
+      send "%{_p}%&7Your balance: &e%{_bal}%"
+      stop
 
-# /coins pay <player> <amount> - transfer coins to another player
-command /coins pay <player> <number>:
-  trigger:
-    if arg-2 <= 0:
-      send "{@prefix}&cAmount must be at least 1."
+    # /coins pay <player> <amount> - перевод монет
+    if arg-1 is "pay":
+      if arg-2 is not set or arg-3 is not set:
+        send "%{_p}%&cUsage: /coins pay <player> <amount>"
+        stop
+      set {_t} to offline player named arg-2
+      if {_t} is not set:
+        send "%{_p}%&cPlayer not found."
+        stop
+      if {_t} is player:
+        send "%{_p}%&cYou can't pay yourself."
+        stop
+      if arg-3 <= 0:
+        send "%{_p}%&cAmount must be at least 1."
+        stop
+      if balance of player < arg-3:
+        send "%{_p}%&cNot enough coins."
+        stop
+      remove arg-3 from balance of player
+      add arg-3 to balance of {_t}
+      send "%{_p}%&7You sent &e%arg-3%&7 to &e%{_t}%&7."
+      if {_t} is online:
+        send "%{_p}%&7You received &e%arg-3%&7 from &e%player%&7." to {_t}
       stop
-    if arg-1 is player:
-      send "{@prefix}&cYou can't pay yourself."
-      stop
-    if balance of player < arg-2:
-      send "{@prefix}&cNot enough coins."
-      stop
-    remove arg-2 from balance of player
-    add arg-2 to balance of arg-1
-    send "{@prefix}&7You sent &e%arg-2%&7 to &e%arg-1%&7."
-    send "{@prefix}&7You received &e%arg-2%&7 from &e%player%&7." to arg-1
 
-# /coins give <player> <amount> - admin add coins (coins.admin)
-command /coins give <player> <number>:
-  permission: coins.admin
-  permission message: "{@prefix}&cNo permission."
-  trigger:
-    if arg-2 <= 0:
-      send "{@prefix}&cAmount must be at least 1."
+    # /coins give <player> <amount> - админ добавляет монеты
+    if arg-1 is "give":
+      if player does not have permission "coins.admin":
+        send "%{_p}%&cNo permission."
+        stop
+      if arg-2 is not set or arg-3 is not set:
+        send "%{_p}%&cUsage: /coins give <player> <amount>"
+        stop
+      set {_t} to offline player named arg-2
+      if {_t} is not set:
+        send "%{_p}%&cPlayer not found."
+        stop
+      if arg-3 <= 0:
+        send "%{_p}%&cAmount must be at least 1."
+        stop
+      add arg-3 to balance of {_t}
+      send "%{_p}%&7Added &e%arg-3%&7 to &e%{_t}%&7."
+      if {_t} is online:
+        send "%{_p}%&7You received &e%arg-3%&7 coins." to {_t}
       stop
-    add arg-2 to balance of arg-1
-    send "{@prefix}&7Added &e%arg-2%&7 to &e%arg-1%&7."
-    send "{@prefix}&7You received &e%arg-2%&7 coins." to arg-1
 
-# /coins take <player> <amount> - admin remove coins (coins.admin)
-command /coins take <player> <number>:
-  permission: coins.admin
-  permission message: "{@prefix}&cNo permission."
-  trigger:
-    if arg-2 <= 0:
-      send "{@prefix}&cAmount must be at least 1."
+    # /coins take <player> <amount> - админ снимает монеты
+    if arg-1 is "take":
+      if player does not have permission "coins.admin":
+        send "%{_p}%&cNo permission."
+        stop
+      if arg-2 is not set or arg-3 is not set:
+        send "%{_p}%&cUsage: /coins take <player> <amount>"
+        stop
+      set {_t} to offline player named arg-2
+      if {_t} is not set:
+        send "%{_p}%&cPlayer not found."
+        stop
+      if arg-3 <= 0:
+        send "%{_p}%&cAmount must be at least 1."
+        stop
+      remove arg-3 from balance of {_t}
+      send "%{_p}%&7Removed &e%arg-3%&7 from &e%{_t}%&7."
+      if {_t} is online:
+        send "%{_p}%&7%arg-3%&7 coins were removed." to {_t}
       stop
-    remove arg-2 from balance of arg-1
-    send "{@prefix}&7Removed &e%arg-2%&7 from &e%arg-1%&7."
-    send "{@prefix}&7%arg-2%&7 coins were removed." to arg-1
 
-# /coinstop - show top balances (executes /baltop)
+    # /coins <player> - показать баланс игрока (нужен coins.view.others)
+    set {_t} to offline player named arg-1
+    if {_t} is not set:
+      send "%{_p}%&cPlayer not found."
+      stop
+    if player has permission "coins.view.others":
+      set {_bal} to balance of {_t}
+      send "%{_p}%&e%{_t}%&7 balance: &e%{_bal}%"
+    else:
+      send "%{_p}%&cNo permission."
+
+# /coinstop - показать топ балансов (использует /baltop)
 command /coinstop:
   trigger:
     execute player command "baltop"
