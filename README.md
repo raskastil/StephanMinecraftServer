@@ -27,6 +27,22 @@ Donations will be added later through a safe integration (placeholder for now).
 - 💳 Economy: EssentialsX + Vault
 - 🧪 Scripting: Skript (custom commands and glue logic)
 
+## 🛠️ Build (server files)
+We use a small configurator to download the server jar and plugins.
+
+1) Open `build/server-files.json`
+2) Fill the `url` fields (and optional `sha256`)
+3) Run:
+
+```bash
+.\build server-files
+```
+
+Notes:
+- In PowerShell you must run from the repo folder.
+- Use `-Force` to re-download existing files.
+- Spigot jars are usually built locally (BuildTools). If you already have a jar, set its URL to your own download link.
+
 ## 🗺️ Roadmap
 1. ✅ Stable core (performance, anti-cheat, base configs)
 2. 💰 Economy loop (jobs, shops, coin sinks)
