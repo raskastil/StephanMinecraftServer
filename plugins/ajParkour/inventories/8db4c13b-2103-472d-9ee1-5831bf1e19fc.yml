@@ -1,0 +1,62 @@
+inventory:
+  armor:
+  - null
+  - null
+  - null
+  - null
+  content:
+  - ==: org.bukkit.inventory.ItemStack
+    v: 4671
+    type: WHEAT_SEEDS
+    amount: 2
+  - ==: org.bukkit.inventory.ItemStack
+    v: 4671
+    type: FEATHER
+    amount: 2
+  - ==: org.bukkit.inventory.ItemStack
+    v: 4671
+    type: CHICKEN
+  - ==: org.bukkit.inventory.ItemStack
+    v: 4671
+    type: EMERALD
+    amount: 2
+  - ==: org.bukkit.inventory.ItemStack
+    v: 4671
+    type: DIAMOND
+    amount: 5
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null
+  - null

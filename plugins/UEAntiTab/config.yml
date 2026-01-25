@@ -1,0 +1,46 @@
+antitab:
+# Set to true if you want to block tab for every command
+  everyTab: false
+# Announce in console when a player uses tab completion, if true
+  announceConsole: false
+# Add here every commands that might use tab completion
+  blockedcmdsInTab:
+  - /bukkit
+  - /ver
+  - /?
+  - /about
+  - /plugman
+# Add here every command that you want the players not to use
+# RECOMANDATION: do not use commands that you want for different ranks
+  blockedcmdsInChat: 
+  - /icanhasbukkit
+  - /pl
+  - /bukkit
+  - /minecraft
+  - /ver
+  - /about
+  - /?
+  - /yum
+  - /stop
+  - /man
+  - /spigot
+  - /restart
+  - /op
+  - /deop
+  messages:
+# You can use %perm% for the respective permission
+    noPerm: "&cYou don't have permission to to this!"
+    configReloaded: "&8[&6AntiTab&8] &2Reloaded configuration File."
+    successfullyTabAdd: "&8[&6AntiTab&8] &2Succesfully added command: &4%cmd% &2to blocked tab commands!"
+    successfullyTabDelete: "&8[&6AntiTab&8] &cSuccesfully deleted command: &4%cmd% &cto blocked tab commands!"
+    successfullyChatAdd: "&8[&6AntiTab&8] &2Succesfully added command: &4%cmd% &2to blocked chat commands!"
+    successfullyChatDelete: "&8[&6AntiTab&8] &cSuccesfully deleted command: &4%cmd% &cto blocked chat commands!"
+    invalidArgs: "&8[&6AntiTab&8] &cInvalid command, type /antitab help!"
+    listTabcmds: 
+      head: "&8[&6AntiTab&8] &cList of all blocked tab commands"
+      item: "&8[&6AntiTab&8] &7%index%&8) &2%cmd%"
+      bottom: "&c**********************"
+    listChatcmds:
+      head: "&8[&6AntiTab&8] &cList of all blocked chat commands"
+      item: "&8[&6AntiTab&8] &7%index%&8) &2%cmd%"
+      bottom: "&c**********************"

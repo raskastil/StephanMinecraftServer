@@ -1,0 +1,51 @@
+# Minecraft server (binaries, worlds, caches, logs)
+Server.jar
+libraries/
+bundler/
+logs/
+crash-reports/
+orebfuscator_cache/
+world/
+world_nether/
+world_the_end/
+
+# Plugin jars (keep configs in plugin folders)
+plugins/*.jar
+
+# Plugin metrics/updater data
+plugins/PluginMetrics/
+plugins/Updater/
+plugins/Plan/
+
+# Player data / sensitive lists
+usercache.json
+ops.json
+whitelist.json
+banned-ips.json
+banned-players.json
+server.properties
+eula.txt
+
+# Essentials player data
+plugins/Essentials/userdata/
+plugins/Essentials/userdata-npc-backup/
+plugins/Essentials/usermap.bin
+plugins/Essentials/uuids.bin
+
+# Plugin data/caches (non-config)
+**/*.db
+**/*.db.backup
+**/*.log
+**/*.log.lck
+**/log.txt
+**/log.txt.lck
+plugins/WorldEdit/.archive-unpack/
+plugins/WorldGuard/cache/
+
+# Likely secrets / personal data
+plugins/DiscordSRV/config.yml
+plugins/EssentialsDiscordLink/accounts.json
+
+# OS / editor
+Thumbs.db
+.DS_Store
