@@ -1,6 +1,7 @@
 options:
   prefix: "&6[Coins]&r "
 
+# /coins [player] - show your balance or another player's balance (requires coins.view.others)
 command /coins [<player>]:
   trigger:
     if arg-1 is set:
@@ -13,10 +14,14 @@ command /coins [<player>]:
       set {_bal} to balance of player
       send "{@prefix}&7Your balance: &e%{_bal}%"
 
+# /coins pay <player> <amount> - transfer coins to another player
 command /coins pay <player> <number>:
   trigger:
     if arg-2 <= 0:
       send "{@prefix}&cAmount must be at least 1."
+      stop
+    if arg-1 is player:
+      send "{@prefix}&cYou can't pay yourself."
       stop
     if balance of player < arg-2:
       send "{@prefix}&cNot enough coins."
@@ -26,6 +31,7 @@ command /coins pay <player> <number>:
     send "{@prefix}&7You sent &e%arg-2%&7 to &e%arg-1%&7."
     send "{@prefix}&7You received &e%arg-2%&7 from &e%player%&7." to arg-1
 
+# /coins give <player> <amount> - admin add coins (coins.admin)
 command /coins give <player> <number>:
   permission: coins.admin
   permission message: "{@prefix}&cNo permission."
@@ -37,6 +43,7 @@ command /coins give <player> <number>:
     send "{@prefix}&7Added &e%arg-2%&7 to &e%arg-1%&7."
     send "{@prefix}&7You received &e%arg-2%&7 coins." to arg-1
 
+# /coins take <player> <amount> - admin remove coins (coins.admin)
 command /coins take <player> <number>:
   permission: coins.admin
   permission message: "{@prefix}&cNo permission."
@@ -48,6 +55,7 @@ command /coins take <player> <number>:
     send "{@prefix}&7Removed &e%arg-2%&7 from &e%arg-1%&7."
     send "{@prefix}&7%arg-2%&7 coins were removed." to arg-1
 
+# /coinstop - show top balances (executes /baltop)
 command /coinstop:
   trigger:
     execute player command "baltop"

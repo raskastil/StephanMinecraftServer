@@ -32,7 +32,7 @@
     {"name": "PlayTimes", "output": "plugins/PlayTimes-1.6.2b.jar", "url": "", "sha256": ""},
     {"name": "PlayerReport", "output": "plugins/PlayerReport (1.7 - 1.17.1).jar", "url": "", "sha256": ""},
     {"name": "ProtocolLib", "output": "plugins/ProtocolLib.jar", "url": "", "sha256": ""},
-    {"name": "Skript", "output": "plugins/Skript-2.12.2.jar", "url": "", "sha256": ""},
+    {"name": "Skript", "output": "plugins/Skript-2.14.0.jar", "url": "https://cdn.modrinth.com/data/xFNYAvMk/versions/jchMJWJm/Skript-2.14.0.jar", "sha256": ""},
     {"name": "SuperVanish", "output": "plugins/SuperVanish-6.2.21.jar", "url": "", "sha256": ""},
     {"name": "TAB", "output": "plugins/TAB v5.4.0.jar", "url": "", "sha256": ""},
     {"name": "UEAntiTab", "output": "plugins/UEAntiTab.jar", "url": "", "sha256": ""},
