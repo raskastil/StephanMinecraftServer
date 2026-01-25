@@ -12,6 +12,7 @@ $ErrorActionPreference = "Stop"
 function Write-Usage {
   Write-Host "Usage:"
   Write-Host "  build server-files"
+  Write-Host "  build resolve server-files"
   Write-Host "  build scan server-files"
   Write-Host ""
   Write-Host "Notes:"
@@ -47,6 +48,162 @@ function Download-File([string]$Url, [string]$OutFile, [string]$Sha256, [switch]
     if ($hash -ne $Sha256.ToLowerInvariant()) {
       throw "SHA256 mismatch for $OutFile"
     }
+  }
+}
+
+function Invoke-Json([string]$Url) {
+  $headers = @{
+    "User-Agent" = "StephanMinecraftServer/1.0"
+  }
+  return Invoke-RestMethod -Uri $Url -Headers $headers
+}
+
+function Resolve-GitHubReleaseUrl($source) {
+  if (-not $source.owner -or -not $source.repo) {
+    throw "github source requires owner and repo"
+  }
+  $tag = $source.tag
+  if ($tag) {
+    $api = "https://api.github.com/repos/$($source.owner)/$($source.repo)/releases/tags/$tag"
+  } else {
+    $api = "https://api.github.com/repos/$($source.owner)/$($source.repo)/releases/latest"
+  }
+  $release = Invoke-Json $api
+  if (-not $release.assets) {
+    throw "No assets in GitHub release for $($source.owner)/$($source.repo)"
+  }
+
+  $assets = $release.assets
+  $asset = $null
+  if ($source.asset) {
+    $asset = $assets | Where-Object { $_.name -eq $source.asset } | Select-Object -First 1
+  } elseif ($source.assetRegex) {
+    $asset = $assets | Where-Object { $_.name -match $source.assetRegex } | Select-Object -First 1
+  } else {
+    $asset = $assets | Where-Object { $_.name -match "\\.jar$" } | Select-Object -First 1
+  }
+
+  if (-not $asset) {
+    throw "No matching asset found for $($source.owner)/$($source.repo)"
+  }
+  return $asset.browser_download_url
+}
+
+function Resolve-ModrinthUrl($source) {
+  if (-not $source.project) {
+    throw "modrinth source requires project"
+  }
+
+  $api = "https://api.modrinth.com/v2/project/$($source.project)/version"
+  $query = @()
+  if ($source.loaders) {
+    $query += "loaders=$([uri]::EscapeDataString(($source.loaders | ConvertTo-Json -Compress)))"
+  }
+  if ($source.gameVersions) {
+    $query += "game_versions=$([uri]::EscapeDataString(($source.gameVersions | ConvertTo-Json -Compress)))"
+  }
+  if ($query.Count -gt 0) {
+    $api = "$api?$($query -join '&')"
+  }
+
+  $versions = Invoke-Json $api
+  if (-not $versions) {
+    throw "No Modrinth versions found for $($source.project)"
+  }
+
+  $selected = $null
+  if ($source.version -and $source.version -ne "latest") {
+    $selected = $versions | Where-Object { $_.version_number -eq $source.version -or $_.id -eq $source.version } | Select-Object -First 1
+  } else {
+    $selected = $versions | Sort-Object { $_.date_published } -Descending | Select-Object -First 1
+  }
+
+  if (-not $selected) {
+    throw "No matching Modrinth version found for $($source.project)"
+  }
+
+  $files = $selected.files
+  if (-not $files) {
+    throw "No files in Modrinth version for $($source.project)"
+  }
+
+  $file = $null
+  if ($source.file) {
+    $file = $files | Where-Object { $_.filename -eq $source.file } | Select-Object -First 1
+  } elseif ($source.primary) {
+    $file = $files | Where-Object { $_.primary -eq $true } | Select-Object -First 1
+  } else {
+    $file = $files | Where-Object { $_.filename -match "\\.jar$" } | Select-Object -First 1
+  }
+
+  if (-not $file) {
+    throw "No matching Modrinth file found for $($source.project)"
+  }
+  return $file.url
+}
+
+function Resolve-HangarUrl($source) {
+  if (-not $source.slug) {
+    throw "hangar source requires slug"
+  }
+
+  $projPath = $source.slug
+  if ($source.owner) {
+    $projPath = "$($source.owner)/$($source.slug)"
+  }
+
+  $limit = 20
+  $api = "https://hangar.papermc.io/api/v1/projects/$projPath/versions?limit=$limit&offset=0"
+  $resp = Invoke-Json $api
+  if (-not $resp -or -not $resp.result) {
+    throw "No Hangar versions found for $projPath"
+  }
+
+  $versions = $resp.result | Sort-Object { $_.createdAt } -Descending
+  if ($source.channel) {
+    $versions = $versions | Where-Object { $_.channel.name -eq $source.channel }
+  }
+  if ($source.gameVersion -and $source.platform) {
+    $gv = $source.gameVersion
+    $plat = $source.platform
+    $versions = $versions | Where-Object {
+      $_.platformDependencies.$plat -and ($_.platformDependencies.$plat -match "(^|\\s)$gv(\\s|$)")
+    }
+  }
+
+  $selected = $versions | Select-Object -First 1
+  if (-not $selected) {
+    throw "No matching Hangar version found for $projPath"
+  }
+
+  $platform = $source.platform
+  if (-not $platform) { $platform = "PAPER" }
+
+  $download = $selected.downloads.$platform
+  if (-not $download) {
+    throw "No Hangar download for platform $platform in $projPath"
+  }
+
+  if ($download.downloadUrl) {
+    return $download.downloadUrl
+  }
+  if ($download.externalUrl) {
+    return $download.externalUrl
+  }
+
+  throw "No Hangar download URL for $projPath"
+}
+
+function Resolve-EntryUrl($entry) {
+  if ($entry.url) { return $entry.url }
+  if (-not $entry.source) { return $null }
+
+  switch ($entry.source.type) {
+    "github" { return Resolve-GitHubReleaseUrl $entry.source }
+    "github-release" { return Resolve-GitHubReleaseUrl $entry.source }
+    "modrinth" { return Resolve-ModrinthUrl $entry.source }
+    "hangar" { return Resolve-HangarUrl $entry.source }
+    default { throw "Unknown source type: $($entry.source.type)" }
   }
 }
 
@@ -153,6 +310,40 @@ function Scan-ServerFiles {
   Write-Host "Updated: $manifestPath"
 }
 
+function Resolve-ServerFiles {
+  $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..") | Select-Object -ExpandProperty Path
+  $manifestPath = Join-Path $repoRoot "build\\server-files.json"
+  $manifest = Load-Manifest $manifestPath
+  if (-not $manifest) { throw "Manifest not found: $manifestPath" }
+
+  $changed = $false
+
+  if ($manifest.server) {
+    $url = Resolve-EntryUrl $manifest.server
+    if ($url -and $manifest.server.url -ne $url) {
+      $manifest.server.url = $url
+      $changed = $true
+    }
+  }
+
+  if ($manifest.plugins) {
+    foreach ($p in $manifest.plugins) {
+      $url = Resolve-EntryUrl $p
+      if ($url -and $p.url -ne $url) {
+        $p.url = $url
+        $changed = $true
+      }
+    }
+  }
+
+  if ($changed) {
+    Save-Manifest $manifest $manifestPath
+    Write-Host "Updated: $manifestPath"
+  } else {
+    Write-Host "No changes."
+  }
+}
+
 if (-not $Command) {
   Write-Usage
   exit 1
@@ -164,6 +355,15 @@ if ($Command -eq "scan") {
     exit 1
   }
   Scan-ServerFiles
+  exit 0
+}
+
+if ($Command -eq "resolve") {
+  if ($Target -and $Target -ne "server-files") {
+    Write-Usage
+    exit 1
+  }
+  Resolve-ServerFiles
   exit 0
 }
 
@@ -187,12 +387,14 @@ try {
 $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
 
 if ($manifest.server) {
-  Download-File -Url $manifest.server.url -OutFile $manifest.server.output -Sha256 $manifest.server.sha256 -Force:$Force
+  $url = Resolve-EntryUrl $manifest.server
+  Download-File -Url $url -OutFile $manifest.server.output -Sha256 $manifest.server.sha256 -Force:$Force
 }
 
 if ($manifest.plugins) {
   foreach ($p in $manifest.plugins) {
-    Download-File -Url $p.url -OutFile $p.output -Sha256 $p.sha256 -Force:$Force
+    $url = Resolve-EntryUrl $p
+    Download-File -Url $url -OutFile $p.output -Sha256 $p.sha256 -Force:$Force
   }
 }
 

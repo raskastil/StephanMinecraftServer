@@ -50,6 +50,63 @@ If you already have the `.jar` files locally, you can auto-generate the list:
 .\build scan server-files
 ```
 
+### Auto-fill URLs from the internet
+You can also resolve download URLs from GitHub Releases, Modrinth, or Hangar.
+Add a `source` block to an entry, then run:
+
+```bash
+.\build resolve server-files
+```
+
+Example entries:
+
+```json
+{
+  "name": "GSit",
+  "output": "plugins/GSit.jar",
+  "url": "",
+  "sha256": "",
+  "source": {
+    "type": "hangar",
+    "slug": "GSit",
+    "platform": "PAPER",
+    "channel": "Release",
+    "gameVersion": "1.21.11"
+  }
+}
+```
+
+```json
+{
+  "name": "SomePlugin",
+  "output": "plugins/SomePlugin.jar",
+  "url": "",
+  "sha256": "",
+  "source": {
+    "type": "github",
+    "owner": "OWNER",
+    "repo": "REPO",
+    "assetRegex": ".*\\.jar$"
+  }
+}
+```
+
+```json
+{
+  "name": "ModrinthPlugin",
+  "output": "plugins/ModrinthPlugin.jar",
+  "url": "",
+  "sha256": "",
+  "source": {
+    "type": "modrinth",
+    "project": "PROJECT_ID_OR_SLUG",
+    "loaders": ["paper"],
+    "gameVersions": ["1.21.11"],
+    "primary": true
+  }
+}
+```
+
 ## 🗺️ Roadmap
 1. ✅ Stable core (performance, anti-cheat, base configs)
 2. 💰 Economy loop (jobs, shops, coin sinks)
