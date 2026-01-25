@@ -349,7 +349,7 @@ function Resolve-ServerFiles {
 }
 
 function Get-JavaMajorVersion {
-  $line = (& java -version 2>&1 | Select-Object -First 1)
+  $line = (cmd /c "java -version 2>&1" | Select-Object -First 1)
   if (-not $line) { return $null }
   $m = [regex]::Match($line, '\"(\d+)(?:\.\d+)*\"')
   if ($m.Success) { return [int]$m.Groups[1].Value }
