@@ -76,6 +76,18 @@ Example entries:
 }
 ```
 
+### Build Spigot locally (BuildTools)
+Spigot 1.21.11 requires **JDK 21**. This command downloads BuildTools and builds Spigot:
+
+```bash
+.\build buildtools -Rev 1.21.11
+```
+
+Options:
+- `-Output Server.jar` to place the built jar in a custom path
+- `-BuildToolsDir C:\BuildTools` to control the build folder
+- `-Force` to re-download BuildTools.jar
+
 ```json
 {
   "name": "SomePlugin",

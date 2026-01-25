@@ -3,6 +3,9 @@ param(
   [string]$Command,
   [Parameter(Position = 1)]
   [string]$Target,
+  [string]$Rev,
+  [string]$Output,
+  [string]$BuildToolsDir,
   [switch]$Force
 )
 
@@ -14,6 +17,7 @@ function Write-Usage {
   Write-Host "  build server-files"
   Write-Host "  build resolve server-files"
   Write-Host "  build scan server-files"
+  Write-Host "  build buildtools"
   Write-Host ""
   Write-Host "Notes:"
   Write-Host "  - Fill URLs in build/server-files.json"
@@ -344,6 +348,85 @@ function Resolve-ServerFiles {
   }
 }
 
+function Get-JavaMajorVersion {
+  $line = (& java -version 2>&1 | Select-Object -First 1)
+  if (-not $line) { return $null }
+  $m = [regex]::Match($line, '\"(\d+)(?:\.\d+)*\"')
+  if ($m.Success) { return [int]$m.Groups[1].Value }
+  $m = [regex]::Match($line, 'version\s+(\d+)')
+  if ($m.Success) { return [int]$m.Groups[1].Value }
+  return $null
+}
+
+function Build-Spigot {
+  $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..") | Select-Object -ExpandProperty Path
+  $manifestPath = Join-Path $repoRoot "build\\server-files.json"
+  $manifest = Load-Manifest $manifestPath
+
+  if (-not $Rev -or $Rev -eq "") {
+    if ($manifest -and $manifest.server -and $manifest.server.name) {
+      $m = [regex]::Match($manifest.server.name, '(\\d+\\.\\d+(?:\\.\\d+)?)')
+      if ($m.Success) { $Rev = $m.Groups[1].Value }
+    }
+  }
+  if (-not $Rev -or $Rev -eq "") { $Rev = "1.21.11" }
+
+  if (-not $Output -or $Output -eq "") {
+    if ($manifest -and $manifest.server -and $manifest.server.output) {
+      $Output = $manifest.server.output
+    } else {
+      $Output = "Server.jar"
+    }
+  }
+
+  $javaMajor = Get-JavaMajorVersion
+  if (-not $javaMajor) {
+    throw "Java not found. Install JDK 21 and ensure java is in PATH."
+  }
+  if ($javaMajor -lt 21) {
+    throw "Java $javaMajor detected. Spigot 1.21.11 requires JDK 21."
+  }
+
+  if (-not $BuildToolsDir -or $BuildToolsDir -eq "") {
+    $BuildToolsDir = Join-Path $repoRoot "build\\buildtools"
+  }
+  Ensure-Dir $BuildToolsDir
+
+  $btJar = Join-Path $BuildToolsDir "BuildTools.jar"
+  if (-not (Test-Path -LiteralPath $btJar) -or $Force) {
+    $btUrl = "https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar"
+    Write-Host "GET  $btUrl"
+    Invoke-WebRequest -Uri $btUrl -OutFile $btJar -UseBasicParsing
+  }
+
+  Push-Location $BuildToolsDir
+  try {
+    Write-Host "Building Spigot $Rev..."
+    & java -Xmx2G -jar $btJar --rev $Rev --compile spigot
+  } finally {
+    Pop-Location
+  }
+
+  $builtJar = Join-Path $BuildToolsDir ("spigot-" + $Rev + ".jar")
+  if (-not (Test-Path -LiteralPath $builtJar)) {
+    $candidate = Get-ChildItem -Path $BuildToolsDir -Filter "spigot-*.jar" -File | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    if ($candidate) { $builtJar = $candidate.FullName }
+  }
+
+  if (-not (Test-Path -LiteralPath $builtJar)) {
+    throw "Built jar not found in $BuildToolsDir"
+  }
+
+  $dest = $Output
+  if (-not [IO.Path]::IsPathRooted($dest)) {
+    $dest = Join-Path $repoRoot $dest
+  }
+  $destDir = Split-Path -Parent $dest
+  if ($destDir) { Ensure-Dir $destDir }
+  Copy-Item -Path $builtJar -Destination $dest -Force
+  Write-Host "Saved: $dest"
+}
+
 if (-not $Command) {
   Write-Usage
   exit 1
@@ -364,6 +447,11 @@ if ($Command -eq "resolve") {
     exit 1
   }
   Resolve-ServerFiles
+  exit 0
+}
+
+if ($Command -eq "buildtools") {
+  Build-Spigot
   exit 0
 }
 
