@@ -1,85 +1,24 @@
 enabled:
-  # Will show ownership of items when they are created/found.
-  created-by:
-    pickaxe: true
-    sword: true
-    shovel: true
-    axe: true
-    hoe: true
-    shears: true
-    bow: true
-    armor: true
-    mace: true
-  # Will show time the item is created
-  created-date:
-    pickaxe: true
-    sword: true
-    shovel: true
-    axe: true
-    hoe: true
-    shears: true
-    bow: true
-    armor: true
-    mace: true
-  # Will show "Fished by <player>"
-  fished-tag:
-    pickaxe: true
-    sword: true
-    shovel: true
-    axe: true
-    hoe: true
-    shears: true
-    bow: true
-    armor: true
-  # Will show "Found by <player>"
-  looted-tag:
-    pickaxe: true
-    sword: true
-    shovel: true
-    axe: true
-    hoe: true
-    shears: true
-    bow: true
-    armor: true
-  # Will show "Trade by <player>"
-  traded-tag:
-    pickaxe: true
-    sword: true
-    shovel: true
-    axe: true
-    hoe: true
-    shears: true
-    bow: true
-    armor: true
   player-kills:
     sword: true
     axe: true
     trident: true
     bow: true
     mace: true
+    spear: true
   mob-kills:
     sword: true
     axe: true
     trident: true
     bow: true
     mace: true
+    spear: true
   blocks-mined:
     pickaxe: true
     shovel: true
     axe: true
     hoe: true
     shears: true
-  # Will show "Spawned in by <player>"
-  spawned-in:
-    pickaxe: true
-    sword: true
-    shovel: true
-    axe: true
-    hoe: true
-    shears: true
-    bow: true
-    armor: true
-    mace: true
   fish-caught: true
   sheep-sheared: true
   armor-damage: true
@@ -87,11 +26,141 @@ enabled:
   elytra-tag: true
   arrows-shot: true
   flight-time: true
+  crops-harvested: true
+  damage-done:
+    sword: true
+    axe: true
+    trident: true
+    bow: true
+    mace: true
+    spear: true
+  crafted-by:
+    pickaxe: true
+    sword: true
+    shovel: true
+    axe: true
+    hoe: true
+    shears: true
+    bow: true
+    armor: true
+    mace: true
+    fishing-rod: true
+    spear: true
+    shield: true
+  crafted-on:
+    pickaxe: true
+    sword: true
+    shovel: true
+    axe: true
+    hoe: true
+    shears: true
+    bow: true
+    armor: true
+    mace: true
+    fishing-rod: true
+    spear: true
+    shield: true
+  fished-by:
+    pickaxe: true
+    sword: true
+    shovel: true
+    axe: true
+    hoe: true
+    shears: true
+    bow: true
+    armor: true
+    fishing-rod: true
+  fished-on:
+    pickaxe: true
+    sword: true
+    shovel: true
+    axe: true
+    hoe: true
+    shears: true
+    bow: true
+    armor: true
+    fishing-rod: true
+  looted-by:
+    pickaxe: true
+    sword: true
+    shovel: true
+    axe: true
+    hoe: true
+    shears: true
+    bow: true
+    armor: true
+    fishing-rod: true
+    spear: true
+    shield: true
+  looted-on:
+    pickaxe: true
+    sword: true
+    shovel: true
+    axe: true
+    hoe: true
+    shears: true
+    bow: true
+    armor: true
+    fishing-rod: true
+    spear: true
+    shield: true
+  traded-by:
+    pickaxe: true
+    sword: true
+    shovel: true
+    axe: true
+    hoe: true
+    shears: true
+    bow: true
+    armor: true
+    fishing-rod: true
+    shield: true
+  traded-on:
+    pickaxe: true
+    sword: true
+    shovel: true
+    axe: true
+    hoe: true
+    shears: true
+    bow: true
+    armor: true
+    fishing-rod: true
+    shield: true
+  spawned-in-by:
+    pickaxe: true
+    sword: true
+    shovel: true
+    axe: true
+    hoe: true
+    shears: true
+    bow: true
+    armor: true
+    mace: true
+    fishing-rod: true
+    spear: true
+  spawned-in-on:
+    pickaxe: true
+    sword: true
+    shovel: true
+    axe: true
+    hoe: true
+    shears: true
+    bow: true
+    armor: true
+    mace: true
+    fishing-rod: true
+    spear: true
+  dropped-on: true
+  bosses-killed:
+    wither: true
+    enderdragon: true
+    elderguardian: true
+    warden: true
+  critical-strikes: true
+  trident-throws: true
+  logs-stripped: true
 
 messages:
-  created:
-    created-by: '&7Crafted by: &8{player}'
-    created-on: '&7Crafted on: &8{date}'
   fished:
     caught-by: '&7Caught by: &8{player}'
     caught-on: '&7Caught on: &8{date}'
@@ -116,20 +185,23 @@ messages:
   dropped-by: '&7Dropped by: &8{name}' # name will be player/mob name
   damage-taken: '&7Damage taken: &8{damage}'
   arrows-shot: '&7Arrows shot: &8{arrows}'
-  flight-time: '&7Flight time: &8{time}'
-  # Display this message if the player shift click trades/crafts items. It's not really easy to get every single item
-  # that is crafted. The tag will only be added to the first item. If you don't want this message, simply replace them both with ""
-  shift-click-warning:
-    crafting: '&cCrafting items via shift clicking does not fully apply tags to each
-      item. This is a limitation with the Bukkit API.'
-    trading: '&cTrading items via shift clicking does not fully apply tags to each
-      item. This is a limitation with the Bukkit API.'
-  # Set display name for mobs. See: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
-  mobs:
-    ZOMBIE: Zombie
+  flight-time: '&7Flight time: &8{years}y {months}m {days}d {hours}h {minutes}m {seconds}s'
   # Set display name for mobs. See: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
   mob:
     ZOMBIE: Zombie
+  damage-done: '&7Damage done: &8{damage}'
+  crafted:
+    crafted-by: '&7Crafted by: &8{player}'
+    crafted-on: '&7Crafted on: &8{date}'
+  dropped-on: '&7Dropped on: &8{date}'
+  bosses-killed:
+    wither: '&7Withers killed: &8{kills}'
+    enderdragon: '&7Ender Dragons killed: &8{kills}'
+    elderguardian: '&7Elder Guardians killed: &8{kills}'
+    warden: '&7Wardens killed: &8{kills}'
+  critical-strikes: '&7Critical strikes: &8{strikes}'
+  trident-throws: '&7Times thrown: &8{times}'
+  logs-stripped: '&7Logs stripped: &8{logs}'
 
 # Change the default formatting for dates.
 # See: https://www.digitalocean.com/community/tutorials/java-simpledateformat-java-date-format
@@ -149,4 +221,289 @@ number-formats:
 # This has no use currently, but can be used for future features for dupe detection.
 generate-hash-for-items: true
 
-config-version: 8
+config-version: 19
+# Use token system for tracking stats.
+# See https://docs.hyper.lol/plugins/toolstats/tokens/
+tokens:
+  enabled: false
+  craft-tokens: true
+  data:
+    player-kills:
+      title: '&7ToolStats: &8Player Kills Token'
+      lore:
+      - '&8Combine with a melee or ranged weapon in an anvil to track player kills.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    mob-kills:
+      title: '&7ToolStats: &8Mob Kills Token'
+      lore:
+      - '&8Combine with a melee or ranged weapon in an anvil to track mob kills.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    blocks-mined:
+      title: '&7ToolStats: &8Blocks Mined Token'
+      lore:
+      - '&8Combine with a pickaxe, axe, shovel, or shears in an anvil to track blocks
+        mined.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    crops-mined:
+      title: '&7ToolStats: &8Crops Mined Token'
+      lore:
+      - '&8Combine with a hoe in an anvil to track crops broken.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    fish-caught:
+      title: '&7ToolStats: &8Fish Caught Token'
+      lore:
+      - '&8Combine with a fishing rod in an anvil to track fish caught.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    sheep-sheared:
+      title: '&7ToolStats: &8Sheep Sheared Token'
+      lore:
+      - '&8Combine with shears in an anvil to track sheep sheared.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    damage-taken:
+      title: '&7ToolStats: &8Damage Taken Token'
+      lore:
+      - '&8Combine with an armor piece in an anvil to track damage taken.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    arrows-shot:
+      title: '&7ToolStats: &8Arrows Shot Token'
+      lore:
+      - '&8Combine with a bow or crossbow in an anvil to track arrows shot.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    flight-time:
+      title: '&7ToolStats: &8Flight Time Token'
+      lore:
+      - '&8Combine with an elytra in an anvil to track flight time.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    reset:
+      title: '&7ToolStats: &8Reset Token'
+      lore:
+      - '&8Combine with an item in an anvil to reset ALL stats for that item. Tokens
+        on this item stay.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    damage-done:
+      title: '&7ToolStats: &8Damage Done Token'
+      lore:
+      - '&8Combine with a melee or ranged weapon in an anvil to track damage done.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    remove:
+      title: '&7ToolStats: &8Remove Token'
+      lore:
+      - '&8Combine in an anvil with to REMOVE ALL stats and tokens for this item.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    wither-kills:
+      title: '&7ToolStats: &8Wither Kills Token'
+      lore:
+      - '&8Combine with a melee or ranged weapon in an anvil to track wither kills.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    enderdragon-kills:
+      title: '&7ToolStats: &8Ender Dragon Kills Token'
+      lore:
+      - '&8Combine with a melee or ranged weapon in an anvil to track Ender Dragon
+        kills.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    critical-strikes:
+      title: '&7ToolStats: &8Critical Strikes Token'
+      lore:
+      - '&8Combine with a melee or ranged weapon in an anvil to track critical strikes.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    trident-throws:
+      title: '&7ToolStats: &8Trident Throws Token'
+      lore:
+      - '&8Combine with a trident in an anvil to track times thrown.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    logs-stripped:
+      title: '&7ToolStats: &8Logs Stripped Token'
+      lore:
+      - '&8Combine with an axe in an anvil to track logs stripped.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+      item-model:
+        enabled: false
+        value: minecraft:paper
+    elderguardian-kills:
+      item-model:
+        enabled: false
+        value: minecraft:paper
+      title: '&7ToolStats: &8Elder Guardian Kills Token'
+      lore:
+      - '&8Combine with a melee or ranged weapon in an anvil to track Elder Guardian
+        kills.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+    warden-kills:
+      item-model:
+        enabled: false
+        value: minecraft:paper
+      title: '&7ToolStats: &8Warden Kills Token'
+      lore:
+      - '&8Combine with a melee or ranged weapon in an anvil to track Warden kills.'
+      - '&8Uses &7{levels} &8level.'
+      levels: 1
+      material: PAPER
+      custom-model-data:
+        enabled: false
+        type: float
+        value: 1001
+normalize-time-creation: false
+allow-creative: false
+world-limit:
+  enabled: false
+  mode: blacklist
+  worlds:
+  - world_1
+  - world_2
+ignore-armorstand-damage: false

@@ -1,2 +1,0 @@
-java -Xms2G -Xmx8G -jar spigot-1.20.x.jar nogui
-pause

@@ -1,0 +1,141 @@
+# =============================================
+#  Gems - premium currency for StephanMinecraftServer
+#  Players earn/buy gems and can convert them to in-game money.
+# =============================================
+#  /gems                         - your balance
+#  /gems <player>                - someone else's balance (gems.view.others)
+#  /gems pay <player> <amount>   - send gems to a player
+#  /gems convert <amount>        - turn gems into money
+#  /gems top                     - top 10 richest players
+#  /gems give|take|set <player> <amount>  - admin (gems.admin)
+# =============================================
+
+options:
+	p: &d[Gems] &7
+	rate: 100
+	# rate = how much money 1 gem is worth when converting
+
+command /gems [<text>] [<offline player>] [<integer>]:
+	aliases: gem
+	trigger:
+		# ---- own balance ----
+		if arg-1 is not set:
+			send "{@p}You have &d%{gems::%uuid of player%} ? 0% &7gems."
+			stop
+
+		# ---- top 10 ----
+		if arg-1 is "top":
+			send "{@p}&dTop 10 gem holders:"
+			set {_sorted::*} to sorted indices of {gems::*} in descending order
+			set {_i} to 0
+			loop {_sorted::*}:
+				add 1 to {_i}
+				set {_who} to loop-value parsed as offline player
+				send "&8%{_i}%. &f%{_who}% &8- &d%{gems::%loop-value%}%"
+				if {_i} >= 10:
+					stop loop
+			if {_i} is 0:
+				send "&7Nobody has any gems yet."
+			stop
+
+		# ---- convert gems to money ----
+		if arg-1 is "convert":
+			if arg-2 is set:
+				set {_amount} to "%arg-2%" parsed as integer
+			if arg-3 is set:
+				set {_amount} to arg-3
+			if {_amount} is not set:
+				send "{@p}Usage: &f/gems convert <amount> &7(1 gem = {@rate} money)"
+				stop
+			if {_amount} < 1:
+				send "{@p}&cAmount must be at least 1."
+				stop
+			if ({gems::%uuid of player%} ? 0) < {_amount}:
+				send "{@p}&cYou don't have enough gems."
+				stop
+			remove {_amount} from {gems::%uuid of player%}
+			set {_money} to {_amount} * {@rate}
+			add {_money} to balance of player
+			send "{@p}Converted &d%{_amount}% gems &7into &a%{_money}% money&7."
+			stop
+
+		# ---- pay ----
+		if arg-1 is "pay":
+			if arg-2 is not set:
+				send "{@p}Usage: &f/gems pay <player> <amount>"
+				stop
+			if arg-3 is not set:
+				send "{@p}Usage: &f/gems pay <player> <amount>"
+				stop
+			if arg-2 is player:
+				send "{@p}&cYou can't pay yourself."
+				stop
+			if arg-3 < 1:
+				send "{@p}&cAmount must be at least 1."
+				stop
+			if ({gems::%uuid of player%} ? 0) < arg-3:
+				send "{@p}&cYou don't have enough gems."
+				stop
+			remove arg-3 from {gems::%uuid of player%}
+			add arg-3 to {gems::%uuid of arg-2%}
+			send "{@p}You sent &d%arg-3% gems &7to &f%arg-2%&7."
+			if arg-2 is online:
+				send "{@p}You received &d%arg-3% gems &7from &f%player%&7." to arg-2
+			stop
+
+		# ---- admin: give / take / set ----
+		if arg-1 is "give" or "take" or "set":
+			if player doesn't have permission "gems.admin":
+				send "{@p}&cNo permission."
+				stop
+			if arg-2 is not set:
+				send "{@p}Usage: &f/gems %arg-1% <player> <amount>"
+				stop
+			if arg-3 is not set:
+				send "{@p}Usage: &f/gems %arg-1% <player> <amount>"
+				stop
+			if arg-3 < 0:
+				send "{@p}&cAmount can't be negative."
+				stop
+			if arg-1 is "give":
+				add arg-3 to {gems::%uuid of arg-2%}
+			else if arg-1 is "take":
+				remove arg-3 from {gems::%uuid of arg-2%}
+				if {gems::%uuid of arg-2%} < 0:
+					set {gems::%uuid of arg-2%} to 0
+			else:
+				set {gems::%uuid of arg-2%} to arg-3
+			send "{@p}%arg-2% now has &d%{gems::%uuid of arg-2%} ? 0% &7gems."
+			stop
+
+		# ---- check another player: /gems <name> ----
+		set {_target} to arg-1 parsed as offline player
+		if {_target} is set:
+			if player doesn't have permission "gems.view.others":
+				send "{@p}&cNo permission."
+				stop
+			send "{@p}&f%{_target}% &7has &d%{gems::%uuid of {_target}%} ? 0% &7gems."
+			stop
+
+		send "{@p}Commands: &f/gems, /gems pay, /gems convert, /gems top"
+
+# Gems for the console / other plugins (e.g. crates, vote rewards):
+#   gems give <player> <amount>  works from the console too.
+command /gemsadmin <text> <offline player> <integer>:
+	permission: gems.admin
+	executable by: console and players
+	trigger:
+		if arg-1 is "give":
+			add arg-3 to {gems::%uuid of arg-2%}
+		else if arg-1 is "take":
+			remove arg-3 from {gems::%uuid of arg-2%}
+			if {gems::%uuid of arg-2%} < 0:
+				set {gems::%uuid of arg-2%} to 0
+		else if arg-1 is "set":
+			set {gems::%uuid of arg-2%} to arg-3
+		else:
+			send "Usage: gemsadmin give|take|set <player> <amount>"
+			stop
+		send "%arg-2% now has %{gems::%uuid of arg-2%} ? 0% gems."
+		if arg-2 is online:
+			send "{@p}Your gem balance is now &d%{gems::%uuid of arg-2%}%&7." to arg-2
