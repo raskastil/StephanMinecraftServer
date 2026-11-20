@@ -1066,7 +1066,7 @@ protect:
       drowned: false
       # Prevent mooshrooms from changing color when struck by lightning.
       mooshroom: false
-    # Prevent the spawning of creatures. If a creature is missing, you can add it following the format below.
+    # Preven2222222awning of creatures. If a creature is missing, you can add it following the format below.
     spawn:
       creeper: false
       skeleton: false
